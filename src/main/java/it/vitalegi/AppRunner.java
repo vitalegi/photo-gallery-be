@@ -1,9 +1,9 @@
 package it.vitalegi;
 
-import it.vitalegi.imageviewer.media.config.PathConfig;
-import it.vitalegi.imageviewer.media.config.ViewerProperties;
-import it.vitalegi.imageviewer.media.service.ImageService;
-import it.vitalegi.imageviewer.media.service.MediaService;
+import it.vitalegi.imageviewer.config.Feed;
+import it.vitalegi.imageviewer.media.service.BulkFeedImportService;
+import it.vitalegi.imageviewer.media.service.FeedService;
+import it.vitalegi.util.YamlUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Log4j2
 @Component
@@ -19,25 +18,23 @@ import java.nio.file.Paths;
 public class AppRunner implements CommandLineRunner {
 
     @Autowired
-    ViewerProperties viewerProperties;
+    FeedService feedService;
+
     @Autowired
-    MediaService mediaService;
-    @Autowired
-    ImageService imageService;
+    BulkFeedImportService feedImportService;
 
     @Override
     public void run(String... args) throws Exception {
-        viewerProperties.getPaths().forEach(this::process);
+        var feeds = YamlUtil.loadConfig(Path.of("config.yml"));
+        feeds.getFeeds().forEach(this::process);
     }
 
-    void process(PathConfig config) {
-        log.info("Process {}", config.getName());
-        mediaService.getImages(Paths.get(config.getPath())).forEach(this::process);
+    void process(Feed feed) {
+        log.info("Create index for {}", feed);
+        feedService.createIndex(feed);
+        log.info("Index created");
+        var resources = feedService.getResources();
+        feedImportService.importResources(resources);
     }
 
-    void process(Path image) {
-        log.info("> {}", image);
-        var strategy = imageService.getImageStrategy(image);
-        strategy.scale(image, 300);
-    }
 }

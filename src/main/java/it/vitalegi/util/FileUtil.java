@@ -1,9 +1,6 @@
 package it.vitalegi.util;
 
-import org.springframework.http.MediaType;
-
 import java.io.IOException;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
@@ -40,4 +37,20 @@ public class FileUtil {
         return path.getFileName().toString();
     }
 
+    public static Path getRelativePath(Path parent, Path child) {
+        String absRoot = parent.toFile().getAbsolutePath();
+        String absChild = child.toFile().getAbsolutePath();
+        if (absChild.startsWith(absRoot)) {
+            return Path.of(absChild.substring(absRoot.length() + 1));
+        }
+        throw new IllegalArgumentException("Elements are not parent/child. " + parent + ", " + child);
+    }
+
+    public static void createDirectories(Path directory) {
+        try {
+            Files.createDirectories(directory.getParent());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

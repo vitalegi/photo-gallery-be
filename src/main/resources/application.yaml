@@ -54,8 +54,3 @@ log:
 metrics:
   skipIfLessThan: 50
 
-viewer:
-  output: C:/a/projects/vitalegi/image-viewer/out
-  paths:
-    - name: test1
-      path: C:/a/projects/vitalegi/image-viewer/20221006-20221010_test

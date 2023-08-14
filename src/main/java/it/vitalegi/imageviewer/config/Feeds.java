@@ -3,9 +3,9 @@ package it.vitalegi.imageviewer.config;
 import lombok.Data;
 
 import java.nio.file.Path;
+import java.util.List;
 
 @Data
-public class PathConfig {
-    String name;
-    String path;
+public class Feeds {
+    List<Feed> feeds;
 }

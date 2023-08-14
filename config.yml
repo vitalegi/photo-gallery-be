@@ -1,0 +1,5 @@
+feeds:
+  - source: ../in1
+    target: ../out1
+  - source: ../in2
+    target: ../out2
