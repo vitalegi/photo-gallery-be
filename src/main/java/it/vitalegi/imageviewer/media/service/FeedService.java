@@ -48,7 +48,7 @@ public class FeedService {
         int tot = resources.size();
         AtomicInteger done = new AtomicInteger(0);
         AtomicInteger errors = new AtomicInteger(0);
-        ForkJoinPool customThreadPool = new ForkJoinPool(10);
+        ForkJoinPool customThreadPool = new ForkJoinPool(20);
         customThreadPool.submit(() -> resources.stream().parallel().forEach(r -> convert(r, tot, done, errors)));
     }
 
