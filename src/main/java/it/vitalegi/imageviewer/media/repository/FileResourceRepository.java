@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 @Log4j2
 @Service
-public class InMemoryResourceRepository {
+public class FileResourceRepository {
 
     List<Resource> resources = new ArrayList<>();
 
