@@ -2,7 +2,7 @@ package it.vitalegi.imageviewer.media.service;
 
 import it.vitalegi.imageviewer.media.model.ImportStatus;
 import it.vitalegi.imageviewer.media.model.Resource;
-import it.vitalegi.imageviewer.media.repository.InMemoryResourceRepository;
+import it.vitalegi.imageviewer.media.repository.FileResourceRepository;
 import it.vitalegi.util.FileUtilService;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public class FeedServiceTests {
     @Mock
     MediaService mediaService;
     @Mock
-    InMemoryResourceRepository resourceRepository;
+    FileResourceRepository resourceRepository;
     @Mock
     FileUtilService fileUtilService;
 

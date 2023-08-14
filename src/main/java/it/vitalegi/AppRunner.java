@@ -1,7 +1,6 @@
 package it.vitalegi;
 
 import it.vitalegi.imageviewer.config.Feed;
-import it.vitalegi.imageviewer.media.service.BulkFeedImportService;
 import it.vitalegi.imageviewer.media.service.FeedService;
 import it.vitalegi.util.YamlUtil;
 import lombok.extern.log4j.Log4j2;
@@ -20,9 +19,6 @@ public class AppRunner implements CommandLineRunner {
     @Autowired
     FeedService feedService;
 
-    @Autowired
-    BulkFeedImportService feedImportService;
-
     @Override
     public void run(String... args) throws Exception {
         var feeds = YamlUtil.loadConfig(Path.of("config.yml"));
@@ -34,7 +30,7 @@ public class AppRunner implements CommandLineRunner {
         feedService.createIndex(feed);
         log.info("Index created");
         var resources = feedService.getResources();
-        feedImportService.importResources(resources);
+        feedService.importResources(resources);
     }
 
 }

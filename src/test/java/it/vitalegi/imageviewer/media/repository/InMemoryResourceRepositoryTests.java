@@ -19,11 +19,11 @@ public class InMemoryResourceRepositoryTests {
     private static final Path TARGET_1 = Path.of("out/b/c1.png");
     private static final Path SOURCE_2 = Path.of("a/b/c2.jpeg");
     private static final Path TARGET_2 = Path.of("out/b/c2.png");
-    InMemoryResourceRepository repository;
+    FileResourceRepository repository;
 
     @BeforeEach
     void init() {
-        repository = new InMemoryResourceRepository();
+        repository = new FileResourceRepository();
         repository.resources = new ArrayList<>();
     }
 
