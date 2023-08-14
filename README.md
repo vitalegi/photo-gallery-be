@@ -20,13 +20,13 @@ Create website to present images in a nicer way, add sync / configuration option
 
 ## Prerequisites
 
-- JDK 11
+- JDK 17
 - Maven
 - Imagemagick
 
 ```
-$env:M2_HOME = 'C:\a\software\apache-maven-3.8.7-java11'
-$env:JAVA_HOME = 'C:\Program Files\Java\jdk-11.0.16.1'
+$env:M2_HOME = 'C:\a\software\apache-maven-3.8.7-java18'
+$env:JAVA_HOME = 'C:\Program Files\Java\jdk-17.0.5'
 $env:PATH = $env:M2_HOME + '\bin;' + $env:JAVA_HOME + '\bin;' + $env:PATH
 ```
 
@@ -79,16 +79,3 @@ liquibase "--changelog-file=dbchangelog.xml" "--url=jdbc:h2:${oldDb};DB_CLOSE_ON
 | OpenApi WEB  | [/swagger-ui/](http://localhost:8080/swagger-ui/index.html) |
 | OpenApi JSON | [/v3/api-docs](http://localhost:8080/v3/api-docs)           |
 | OpenApi YAML | [/v3/api-docs.yaml](http://localhost:8080/v3/api-docs.yaml) |
-
-## Maven upgrade
-
-```
-# update parent
-mvn versions:update-parent "-DparentVersion=(2.7.0,3.0.0)" "-DgenerateBackupPoms=false"
-
-# update dependencies
-mvn versions:use-latest-versions "-Dincludes=org.springdoc:springdoc-openapi-ui,com.tngtech.archunit:archunit-junit5" "-DgenerateBackupPoms=false"
-
-# build and check that application works
-mvn clean package
-```
