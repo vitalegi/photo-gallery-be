@@ -23,14 +23,14 @@ public class AppRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
         var feeds = YamlUtil.loadConfig(Path.of("config.yml"));
         feeds.getFeeds().forEach(this::process);
+        var resources = feedService.getResources();
+        feedService.importResources(resources);
     }
 
     void process(Feed feed) {
         log.info("Create index for {}", feed);
         feedService.createIndex(feed);
         log.info("Index created");
-        var resources = feedService.getResources();
-        feedService.importResources(resources);
     }
 
 }

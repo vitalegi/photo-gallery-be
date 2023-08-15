@@ -51,7 +51,7 @@ mvn clean package
 $env:DATASOURCE_URL = 'jdbc:postgresql://localhost:5432/viewer'
 $env:DATASOURCE_USERNAME = 'postgres'
 $env:DATASOURCE_PASSWORD = 'postgres'
-java -jar "-Dspring.profiles.active=prod" ./target/viewer-*.jar
+java -jar "-Dspring.profiles.active=prod" ./target/image-viewer-*.jar
 
 ./mvnw 
 

@@ -9,6 +9,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
@@ -45,11 +47,40 @@ public class FeedService {
     }
 
     public void importResources(List<Resource> resources) {
+        log.info("Start import {}", resources.size());
         int tot = resources.size();
         AtomicInteger done = new AtomicInteger(0);
         AtomicInteger errors = new AtomicInteger(0);
         ForkJoinPool customThreadPool = new ForkJoinPool(20);
-        customThreadPool.submit(() -> resources.stream().parallel().forEach(r -> convert(r, tot, done, errors)));
+        customThreadPool.submit(() -> resources.parallelStream() //
+                                               .forEach(r -> convert(r, tot, done, errors)));
+    }
+
+    protected boolean isAlreadyImported(Resource resource) {
+        var target = resource.getTargetPath().toFile();
+        if (!target.exists()) {
+            log.info("{} doesn't exist", target);
+            return false;
+        }
+        if (!target.isFile()) {
+            log.info("{} isn't a file", target);
+            return false;
+        }
+        if (!Files.isRegularFile(resource.getTargetPath())) {
+            log.info("{} isn't a regular file", target);
+            return false;
+        }
+        try {
+            long size = Files.size(resource.getTargetPath());
+            if (size <= 0) {
+                log.info("{} size is {}", target, size);
+                return false;
+            }
+        } catch (IOException e) {
+            log.error("Error while processing size of {}", target, e);
+            return false;
+        }
+        return true;
     }
 
     protected void convert(Resource resource, int tot, AtomicInteger done, AtomicInteger errors) {
@@ -64,25 +95,14 @@ public class FeedService {
         } catch (RuntimeException e) {
             errors.incrementAndGet();
             log.error("Failed to process {}", resource, e);
+        } finally {
+            log.info("Status: OK={}, KO={}, tot={}", done, errors, tot);
         }
-        log.info("Status: OK={}, KO={}, tot={}", done, errors, tot);
-    }
-
-    protected boolean isAlreadyImported(Resource resource) {
-        var target = resource.getTargetPath().toFile();
-        if (!target.exists()) {
-            return false;
-        }
-        if (!target.isFile()) {
-            return false;
-        }
-        return true;
     }
 
     public void convert(Resource resource) {
         try {
             resourceRepository.updateStatus(resource, ImportStatus.ONGOING);
-            log.info("Process {} to {}", resource.getSourcePath(), resource.getTargetPath());
             fileUtilService.createDirectories(resource.getTargetPath());
             mediaService.scale(resource.getSourcePath(), resource.getTargetPath());
             resourceRepository.updateStatus(resource, ImportStatus.DONE);

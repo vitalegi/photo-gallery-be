@@ -21,16 +21,16 @@ public class CommandLineRunner {
     }
 
     protected ProcessOutput doExecute(String... command) throws ExecutionException, InterruptedException, IOException {
-        log.info("Start process for {}", String.join(" ", command));
+        log.debug("Start process for {}", String.join(" ", command));
         Process process = new ProcessBuilder(command).start();
         var stdOut = new StreamRecorder(process.getInputStream());
         var stdErr = new StreamRecorder(process.getErrorStream());
         Future<?> futureOut = Executors.newSingleThreadExecutor().submit(stdOut);
         Future<?> futureErr = Executors.newSingleThreadExecutor().submit(stdErr);
         int exitCode = process.waitFor();
-        log.info("Process is completed");
+        log.debug("Process is completed");
         if (exitCode != 0) {
-            log.error("Completed with exit code {}", exitCode);
+            log.error("Completed with exit code {}, command {}", exitCode, String.join(" ", command));
         }
         futureOut.get();
         if (!stdOut.getLines().isEmpty()) {
