@@ -12,11 +12,13 @@ public class FfmpegBuilder {
 
     public String[] build() {
         List<String> command = new ArrayList<>();
-        command.add("ffmpeg -y");
+        command.add("ffmpeg");
+        command.add("-y");
         if (source == null) {
             throw new IllegalArgumentException("Source is mandatory");
         }
-        command.add("-i \"" + source.toString() + "\"");
+        command.add("-i");
+        command.add("\"" + source.toString() + "\"");
         if (scale != null) {
             command.add("-vf");
             command.add(scale);
